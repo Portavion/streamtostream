@@ -5,10 +5,7 @@ from .convert_link import router
 
 app = FastAPI()
 
-origins = [
-    "http://localhost",
-    "http://localhost:5173",
-]
+origins = ["http://localhost", "http://localhost:5173", "https://streamto.stream"]
 
 app.add_middleware(
     CORSMiddleware,
