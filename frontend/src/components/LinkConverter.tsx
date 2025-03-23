@@ -18,7 +18,7 @@ export default function LinkConverter() {
       .replaceAll(":", "%3A")
       .replaceAll("/", "%2F")
       .replaceAll("=", "%3D");
-    const url = `http://127.0.0.1:8000/api/v1/convert-link/${encodedLink}`;
+    const url = `https://streamtostream.onrender.com/api/v1/convert-link/${encodedLink}`;
     let convertedLinks: { links: [string] } = { links: [""] };
 
     try {
