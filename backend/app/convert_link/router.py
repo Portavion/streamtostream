@@ -6,5 +6,5 @@ router = APIRouter()
 
 @router.get("/convert-link/{link: path}", tags=["metadata"])
 async def convert_link(link: str):
-    await convert_track_link(link)
-    return {"link": link}
+    spotify_link = await convert_track_link(link)
+    return {"link": spotify_link}
