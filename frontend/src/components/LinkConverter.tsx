@@ -48,7 +48,6 @@ export default function LinkConverter() {
       return;
     }
     convertLink(inputLink);
-    // setConvertedLink(await convertLink(inputLink));
   };
 
   const handlePaste = async () => {
@@ -90,7 +89,7 @@ export default function LinkConverter() {
                 id="streaming-link"
                 value={inputLink}
                 onChange={(e) => setInputLink(e.target.value)}
-                placeholder="https://stream.example.com/watch?v=123"
+                placeholder="https://tidal.com/browse/track/126102208?u"
                 className="flex-1"
               />
               <Button
