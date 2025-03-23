@@ -76,6 +76,7 @@ export default function LinkConverter() {
     }
   };
 
+  //TODO: refactor components
   return (
     <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-4">
