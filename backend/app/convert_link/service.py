@@ -73,7 +73,7 @@ async def get_streaming_links(link: str) -> list[str]:
     if platform == "spotify":
         streaming_links.append(await get_tidal_link(isrc_code))
     elif platform == "tidal":
-        streaming_links.append(await get_tidal_link(isrc_code))
+        streaming_links.append(await get_spotify_link(isrc_code))
 
     return streaming_links
 
@@ -105,9 +105,6 @@ async def get_tidal_link(isrc: int) -> str:
     request_url = f"https://openapi.tidal.com/v2/tracks?countryCode=GB&include=albums&filter%5Bisrc%5D={isrc}&filter%5Bid%5D=251380837"
     response = requests.get(request_url, headers=headers)
     response_decoded = response.json()
-    print("----------------")
-    print(response_decoded["data"][0])
-    print("----------------")
 
     return response_decoded["data"][0]["attributes"]["externalLinks"][0]["href"]
 
