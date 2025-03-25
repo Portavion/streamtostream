@@ -1,28 +1,8 @@
 import requests
-from enum import Enum
 from .auth_spotify import get_spotify_access_token
 from .auth_tidal import get_tidal_access_token
-from pydantic import BaseModel
 from typing import Optional
-
-
-class Album(BaseModel):
-    artist: str
-    album_name: str
-    release_date: str
-    upc: str
-
-
-class StreamingPlatform(str, Enum):
-    TIDAL = "tidal"
-    SPOTIFY = "spotify"
-
-    @classmethod
-    def from_id(cls, id: str) -> "StreamingPlatform":
-        if id.isnumeric():
-            return cls.TIDAL
-        else:
-            return cls.SPOTIFY
+from .models import Album, StreamingPlatform
 
 
 class APIError(Exception):
