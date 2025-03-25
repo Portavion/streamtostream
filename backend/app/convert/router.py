@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from .service import convert_track_id
-from .service import convert_album_id
+from .handlers import convert_track_id
+from .handlers import convert_album_id
 
 router = APIRouter()
 
