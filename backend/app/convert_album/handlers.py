@@ -11,11 +11,6 @@ from .services.spotify import (
 
 async def convert_album_id(id: str, platform: StreamingPlatform) -> list[str]:
     """Convert an album id to a list of links for other various streaming platforms (supports: Spotify and Tidal)"""
-    return await get_album_streaming_links(id, platform)
-
-
-async def get_album_streaming_links(id: str, platform: StreamingPlatform) -> list[str]:
-    """Gets the album streaming links for other platforms (supports Spotify and Tidal)"""
     album_info = await get_album_info(id, platform)
 
     if platform == StreamingPlatform.SPOTIFY:

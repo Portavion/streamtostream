@@ -11,7 +11,12 @@ from .services.spotify import (
 
 async def convert_track_id(id: str, platform: StreamingPlatform) -> list[str]:
     """Convert a track id to a list of links for other various streaming platforms (supports: Spotify and Tidal)"""
-    return await get_track_streaming_links(id, platform)
+    isrc_code = await get_isrc_code(id, platform)
+
+    if platform == StreamingPlatform.SPOTIFY:
+        return [await get_tidal_track_link(isrc_code)]
+    elif platform == StreamingPlatform.TIDAL:
+        return [await get_spotify_track_link_by_isrc(isrc_code)]
 
 
 async def get_isrc_code(id: str, platform: StreamingPlatform) -> int:
@@ -20,13 +25,3 @@ async def get_isrc_code(id: str, platform: StreamingPlatform) -> int:
         return await get_isrc_tidal(id)
     elif platform == StreamingPlatform.SPOTIFY:
         return await get_isrc_spotify(id)
-
-
-async def get_track_streaming_links(id: str, platform: StreamingPlatform) -> list[str]:
-    """Gets the song streaming links for other platforms (supports Spotify and Tidal)"""
-    isrc_code = await get_isrc_code(id, platform)
-
-    if platform == StreamingPlatform.SPOTIFY:
-        return [await get_tidal_track_link(isrc_code)]
-    elif platform == StreamingPlatform.TIDAL:
-        return [await get_spotify_track_link_by_isrc(isrc_code)]
