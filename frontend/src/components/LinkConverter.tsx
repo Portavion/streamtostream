@@ -4,6 +4,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Clipboard, ClipboardCheck, Loader2 } from "lucide-react";
+import findCategory from "@/utils/findCategory";
+import getID from "@/utils/getID";
+import Category from "@/types/category";
 
 export default function LinkConverter() {
   const [inputLink, setInputLink] = useState("");
@@ -11,14 +14,11 @@ export default function LinkConverter() {
   const [isConverting, setIsConverting] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
 
-  const convertLink = async (link: string) => {
+  const convertLink = async (category: Category, id: string) => {
     setIsConverting(true);
 
-    const encodedLink = link
-      .replaceAll(":", "%3A")
-      .replaceAll("/", "%2F")
-      .replaceAll("=", "%3D");
-    const url = `https://streamtostream.onrender.com/api/v1/convert-link/${encodedLink}`;
+    const url = `http://127.0.0.1:8000/api/v1/convert/${category}/${id}`;
+    // const url = `https://streamto.stream/v1/convert/${category}/${id}`;
     let convertedLinks: { links: [string] } = { links: [""] };
 
     try {
@@ -47,7 +47,13 @@ export default function LinkConverter() {
       console.log("error please enter a streaming link");
       return;
     }
-    convertLink(inputLink);
+    const category = findCategory(inputLink);
+    if (category === Category.notFound) {
+      alert("Only tracks, albums and artists are supported so far.");
+      return;
+    }
+    const id = getID(category, inputLink);
+    convertLink(category, id);
   };
 
   const handlePaste = async () => {

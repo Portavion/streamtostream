@@ -3,34 +3,31 @@ from .spotify_auth import get_spotify_access_token
 from .tidal_auth import get_tidal_access_token
 
 
-async def convert_track_link(request_link: str) -> list[str]:
-    streaming_links = await get_streaming_links(request_link)
+async def convert_track_id(id: str) -> list[str]:
+    streaming_links = await get_streaming_links(id)
 
     return streaming_links
 
 
-async def get_isrc_code(link: str) -> int:
-    platform = get_platform(link)
+async def get_isrc_code(id: str) -> int:
+    platform = get_platform(id)
     isrc_code = 0
     if platform == "tidal":
-        isrc_code = await get_isrc_tidal(link)
+        isrc_code = await get_isrc_tidal(id)
     elif platform == "spotify":
-        isrc_code = await get_isrc_spotify(link)
+        isrc_code = await get_isrc_spotify(id)
 
     return isrc_code
 
 
-async def get_isrc_tidal(link: str) -> int:
+async def get_isrc_tidal(tidal_id: str) -> int:
     # Example track link: tidal.com/browse/track/391366623?u
-    track_id = link.split("/")[-1]
-    track_id = track_id.strip("?u")
-
     access_token = get_tidal_access_token()
     if not access_token:
         print("Error getting access token")
 
     headers = {"Authorization": f"Bearer {access_token}"}
-    request_url = f"https://openapi.tidal.com/v2/tracks/{track_id}?countryCode=GB"
+    request_url = f"https://openapi.tidal.com/v2/tracks/{tidal_id}?countryCode=GB"
 
     response = requests.get(request_url, headers=headers)
     respondeDecoded = response.json()
@@ -38,17 +35,14 @@ async def get_isrc_tidal(link: str) -> int:
     return respondeDecoded["data"]["attributes"]["isrc"]
 
 
-async def get_isrc_spotify(link: str) -> int:
+async def get_isrc_spotify(spotify_id: str) -> int:
     # Example track link: open.spotify.com/track/3tYxhPqkioZEV5el3DJxLQ?si=11c6f71d60184dac
-    track_id = link.split("/track/")[-1]
-    track_id = track_id.split("?")[0]
-
     access_token = get_spotify_access_token()
     if not access_token:
         print("Error getting spotify access token")
 
     headers = {"Authorization": f"Bearer {access_token}"}
-    request_url = f"https://api.spotify.com/v1/tracks/{track_id}"
+    request_url = f"https://api.spotify.com/v1/tracks/{spotify_id}"
 
     response = requests.get(request_url, headers=headers)
     response_decoded = response.json()
@@ -56,18 +50,18 @@ async def get_isrc_spotify(link: str) -> int:
     return response_decoded["external_ids"]["isrc"]
 
 
-def get_platform(link: str) -> str:
-    if "spotify" in link:
-        return "spotify"
-    elif "tidal" in link:
+def get_platform(id: str) -> str:
+    # Tidal id format: 126102208
+    # Spotify id format: 3tYxhPqkioZEV5el3DJxLQ
+    if id.isnumeric():
         return "tidal"
     else:
-        return "not found"
+        return "spotify"
 
 
-async def get_streaming_links(link: str) -> list[str]:
-    platform = get_platform(link)
-    isrc_code = await get_isrc_code(link)
+async def get_streaming_links(id: str) -> list[str]:
+    platform = get_platform(id)
+    isrc_code = await get_isrc_code(id)
     streaming_links = []
 
     if platform == "spotify":
@@ -107,10 +101,3 @@ async def get_tidal_link(isrc: int) -> str:
     response_decoded = response.json()
 
     return response_decoded["data"][0]["attributes"]["externalLinks"][0]["href"]
-
-
-def extract_track_id(link: str) -> int:
-    track_id = link.split("/")[-1]
-    track_id = track_id.strip("?u")
-
-    return int(track_id)
