@@ -18,7 +18,7 @@ async def convert_track_id(id: str) -> list[str]:
 
 async def convert_album_id(id: str) -> list[str]:
     """Convert an album id to a list of links for other various streaming platforms (supports: Spotify and Tidal)"""
-    return await get_album_links(id)
+    return await get_album_streaming_links(id)
 
 
 def get_platform(id: str) -> str:
@@ -115,7 +115,7 @@ async def get_tidal_track_link(isrc: int) -> str:
     return response_decoded["data"][0]["attributes"]["externalLinks"][0]["href"]
 
 
-async def get_album_links(id: str) -> list[str]:
+async def get_album_streaming_links(id: str) -> list[str]:
     platform = get_platform(id)
     album_info = await get_album_info(id)
     streaming_links = []
