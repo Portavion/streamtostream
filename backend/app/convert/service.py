@@ -1,4 +1,5 @@
 import requests
+from enum import Enum
 from .auth_spotify import get_spotify_access_token
 from .auth_tidal import get_tidal_access_token
 from pydantic import BaseModel
@@ -9,6 +10,18 @@ class Album(BaseModel):
     album_name: str
     release_date: str
     upc: str
+
+
+class StreamingPlatform(str, Enum):
+    TIDAL = "tidal"
+    SPOTIFY = "spotify"
+
+    @classmethod
+    def from_id(cls, id: str) -> "StreamingPlatform":
+        if id.isnumeric():
+            return cls.TIDAL
+        else:
+            return cls.SPOTIFY
 
 
 async def convert_track_id(id: str) -> list[str]:
@@ -31,14 +44,14 @@ def get_platform(id: str) -> str:
 
 
 async def get_isrc_code(id: str) -> int:
-    platform = get_platform(id)
-    isrc_code = 0
-    if platform == "tidal":
-        isrc_code = await get_isrc_tidal(id)
-    elif platform == "spotify":
-        isrc_code = await get_isrc_spotify(id)
+    """Gets the ISRC code for the specified track id"""
+    platform = StreamingPlatform.from_id(id)
+    if platform == StreamingPlatform.TIDAL:
+        return await get_isrc_tidal(id)
+    elif platform == StreamingPlatform.SPOTIFY:
+        return await get_isrc_spotify(id)
 
-    return isrc_code
+    raise ValueError(f"Unexpected platform: {platform}")
 
 
 async def get_isrc_tidal(tidal_id: str) -> int:
