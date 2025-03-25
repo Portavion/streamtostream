@@ -1,6 +1,6 @@
 import requests
 from ..exceptions import APIError
-from ..models import Album
+from ...models import Album
 from ...auth.auth_spotify import get_spotify_access_token
 
 

@@ -1,7 +1,7 @@
 import requests
 from ..exceptions import APIError
 from ...auth.auth_tidal import get_tidal_access_token
-from ..models import Album
+from ...models import Album
 
 
 async def get_album_info_tidal(tidal_id: str) -> Album:
