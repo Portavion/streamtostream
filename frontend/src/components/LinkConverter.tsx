@@ -18,7 +18,6 @@ export default function LinkConverter() {
     setIsConverting(true);
 
     const url = `http://127.0.0.1:8000/api/v1/convert/${category}/${id}`;
-    // const url = `https://streamto.stream/v1/convert/${category}/${id}`;
     let convertedLinks: { links: [string] } = { links: [""] };
 
     try {
@@ -49,7 +48,7 @@ export default function LinkConverter() {
     }
     const category = findCategory(inputLink);
     if (category === Category.notFound) {
-      alert("Only tracks, albums and artists are supported so far.");
+      alert("Only tracks, and albums are supported.");
       return;
     }
     const id = getID(category, inputLink);

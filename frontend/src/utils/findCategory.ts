@@ -9,8 +9,8 @@ export default function (url: string): Category {
     return Category.track;
   } else if (url.includes("album")) {
     return Category.album;
-  } else if (url.includes("artist")) {
-    return Category.artist;
+    // } else if (url.includes("artist")) {
+    // return Category.artist;
   }
   return Category.notFound;
 }
