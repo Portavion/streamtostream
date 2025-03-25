@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .convert import router
+from .convert_track import router as track_router
+from .convert_album import router as album_router
 
 app = FastAPI()
 
@@ -15,7 +16,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(router.router, prefix="/api/v1")
+app.include_router(track_router.router, prefix="/api/v1")
+app.include_router(album_router.router, prefix="/api/v1")
 
 
 @app.get("/")
