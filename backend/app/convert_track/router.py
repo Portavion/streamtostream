@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from .handlers import convert_track_id
-from models import StreamingPlatform
+from ..models import StreamingPlatform
 from ..utils import validate_platform_id
 from urllib.parse import quote
 
