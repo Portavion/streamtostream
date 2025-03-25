@@ -12,10 +12,12 @@ class Album(BaseModel):
 
 
 async def convert_track_id(id: str) -> list[str]:
+    """Convert a track id to a list of links for other various streaming platforms (supports: Spotify and Tidal)"""
     return await get_track_streaming_links(id)
 
 
 async def convert_album_id(id: str) -> list[str]:
+    """Convert an album id to a list of links for other various streaming platforms (supports: Spotify and Tidal)"""
     return await get_album_links(id)
 
 
