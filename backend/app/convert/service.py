@@ -34,15 +34,6 @@ async def convert_album_id(id: str) -> list[str]:
     return await get_album_streaming_links(id)
 
 
-def get_platform(id: str) -> str:
-    # Tidal id format: 126102208
-    # Spotify id format: 3tYxhPqkioZEV5el3DJxLQ
-    if id.isnumeric():
-        return "tidal"
-    else:
-        return "spotify"
-
-
 async def get_isrc_code(id: str) -> int:
     """Gets the ISRC code for the specified track id"""
     platform = StreamingPlatform.from_id(id)
@@ -50,6 +41,18 @@ async def get_isrc_code(id: str) -> int:
         return await get_isrc_tidal(id)
     elif platform == StreamingPlatform.SPOTIFY:
         return await get_isrc_spotify(id)
+
+    raise ValueError(f"Unexpected platform: {platform}")
+
+
+async def get_track_streaming_links(id: str) -> list[str]:
+    platform = StreamingPlatform.from_id(id)
+    isrc_code = await get_isrc_code(id)
+
+    if platform == StreamingPlatform.SPOTIFY:
+        return [await get_tidal_track_link(isrc_code)]
+    elif platform == StreamingPlatform.TIDAL:
+        return [await get_spotify_track_link(isrc_code)]
 
     raise ValueError(f"Unexpected platform: {platform}")
 
@@ -84,19 +87,6 @@ async def get_isrc_spotify(spotify_id: str) -> int:
     return response_decoded["external_ids"]["isrc"]
 
 
-async def get_track_streaming_links(id: str) -> list[str]:
-    platform = get_platform(id)
-    isrc_code = await get_isrc_code(id)
-    streaming_links = []
-
-    if platform == "spotify":
-        streaming_links.append(await get_tidal_track_link(isrc_code))
-    elif platform == "tidal":
-        streaming_links.append(await get_spotify_track_link(isrc_code))
-
-    return streaming_links
-
-
 async def get_spotify_track_link(isrc: int) -> str:
     spotify_token = get_spotify_access_token()
 
@@ -129,31 +119,25 @@ async def get_tidal_track_link(isrc: int) -> str:
 
 
 async def get_album_streaming_links(id: str) -> list[str]:
-    platform = get_platform(id)
+    platform = StreamingPlatform.from_id(id)
     album_info = await get_album_info(id)
-    streaming_links = []
 
-    if platform == "spotify":
-        streaming_links.append(await get_tidal_album_link(album_info))
-        pass
-    elif platform == "tidal":
-        streaming_links.append(await get_spotify_album_link(album_info))
-        pass
+    if platform == StreamingPlatform.SPOTIFY:
+        return [await get_tidal_album_link(album_info)]
+    elif platform == StreamingPlatform.TIDAL:
+        return [await get_spotify_album_link(album_info)]
 
-    return streaming_links
+    raise ValueError(f"Unexpected platform: {platform}")
 
 
 async def get_album_info(id: str) -> Album:
-    platform = get_platform(id)
-    album_info = Album(
-        **{"artist": "", "album_name": "", "release_date": "", "upc": ""}
-    )
-    if platform == "tidal":
-        album_info = await get_album_info_tidal(id)
-    elif platform == "spotify":
-        album_info = await get_album_info_spotify(id)
+    platform = StreamingPlatform.from_id(id)
+    if platform == StreamingPlatform.TIDAL:
+        return await get_album_info_tidal(id)
+    elif platform == StreamingPlatform.SPOTIFY:
+        return await get_album_info_spotify(id)
 
-    return album_info
+    raise ValueError(f"Unexpected platform: {platform}")
 
 
 async def get_album_info_tidal(tidal_id: str) -> Album:
