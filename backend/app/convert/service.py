@@ -46,6 +46,7 @@ async def get_isrc_code(id: str) -> int:
 
 
 async def get_track_streaming_links(id: str) -> list[str]:
+    """Gets the song streaming links for other platforms (supports Spotify and Tidal)"""
     platform = StreamingPlatform.from_id(id)
     isrc_code = await get_isrc_code(id)
 
@@ -58,6 +59,7 @@ async def get_track_streaming_links(id: str) -> list[str]:
 
 
 async def get_isrc_tidal(tidal_id: str) -> int:
+    """Gets the song ISRC code from a tidal track id"""
     # Example track link: tidal.com/browse/track/391366623?u
     access_token = get_tidal_access_token()
     if not access_token:
@@ -73,6 +75,7 @@ async def get_isrc_tidal(tidal_id: str) -> int:
 
 
 async def get_isrc_spotify(spotify_id: str) -> int:
+    """Gets the song ISRC code from a Spotify track id"""
     # Example track link: open.spotify.com/track/3tYxhPqkioZEV5el3DJxLQ?si=11c6f71d60184dac
     access_token = get_spotify_access_token()
     if not access_token:
@@ -88,6 +91,7 @@ async def get_isrc_spotify(spotify_id: str) -> int:
 
 
 async def get_spotify_track_link(isrc: int) -> str:
+    """Gets a Spotify song link from song ISRC code"""
     spotify_token = get_spotify_access_token()
 
     if not spotify_token:
@@ -103,6 +107,7 @@ async def get_spotify_track_link(isrc: int) -> str:
 
 
 async def get_tidal_track_link(isrc: int) -> str:
+    """Gets a Tidal song link from song ISRC code"""
     token = get_tidal_access_token()
 
     if not token:
@@ -119,6 +124,7 @@ async def get_tidal_track_link(isrc: int) -> str:
 
 
 async def get_album_streaming_links(id: str) -> list[str]:
+    """Gets the album streaming links for other platforms (supports Spotify and Tidal)"""
     platform = StreamingPlatform.from_id(id)
     album_info = await get_album_info(id)
 
@@ -131,6 +137,7 @@ async def get_album_streaming_links(id: str) -> list[str]:
 
 
 async def get_album_info(id: str) -> Album:
+    """Gets the album information from an album id"""
     platform = StreamingPlatform.from_id(id)
     if platform == StreamingPlatform.TIDAL:
         return await get_album_info_tidal(id)
@@ -141,6 +148,7 @@ async def get_album_info(id: str) -> Album:
 
 
 async def get_album_info_tidal(tidal_id: str) -> Album:
+    """Get album informations from Tidal"""
     # Example query https://openapi.tidal.com/v2/albums/126102201?countryCode=US&include=artists
 
     access_token = get_tidal_access_token()
@@ -170,6 +178,7 @@ async def get_album_info_tidal(tidal_id: str) -> Album:
 
 
 async def get_album_info_spotify(spotify_id: str) -> Album:
+    """Get album informations from Spotify"""
     # Example query https://api.spotify.com/v1/albums/4aawyAB9vmqN3uQ7FjRGTy
 
     access_token = get_spotify_access_token()
@@ -197,6 +206,7 @@ async def get_album_info_spotify(spotify_id: str) -> Album:
 
 
 async def get_tidal_album_link(album_info: Album) -> str:
+    """Gets a Tidal album link from the album UPC code"""
     token = get_tidal_access_token()
 
     if not token:
@@ -213,6 +223,7 @@ async def get_tidal_album_link(album_info: Album) -> str:
 
 
 async def get_spotify_album_link(album_info: Album) -> str:
+    """Gets a Spotify album link from the album UPC code"""
     token = get_spotify_access_token()
 
     if not token:
