@@ -12,15 +12,11 @@ class Album(BaseModel):
 
 
 async def convert_track_id(id: str) -> list[str]:
-    track_links = await get_track_streaming_links(id)
-
-    return track_links
+    return await get_track_streaming_links(id)
 
 
 async def convert_album_id(id: str) -> list[str]:
-    album_links = await get_album_links(id)
-
-    return album_links
+    return await get_album_links(id)
 
 
 def get_platform(id: str) -> str:
