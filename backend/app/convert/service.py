@@ -1,6 +1,6 @@
 import requests
-from .spotify_auth import get_spotify_access_token
-from .tidal_auth import get_tidal_access_token
+from .auth_spotify import get_spotify_access_token
+from .auth_tidal import get_tidal_access_token
 from pydantic import BaseModel
 
 
