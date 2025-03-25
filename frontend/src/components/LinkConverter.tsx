@@ -17,7 +17,8 @@ export default function LinkConverter() {
   const convertLink = async (category: Category, id: string) => {
     setIsConverting(true);
 
-    const url = `http://127.0.0.1:8000/api/v1/convert/${category}/${id}`;
+    // const url = `http://127.0.0.1:8000/api/v1/convert/${category}/${id}`;
+    const url = `https://streamtostream.onrender.com/api/v1/convert/${category}/${id}`;
     let convertedLinks: { links: [string] } = { links: [""] };
 
     try {
